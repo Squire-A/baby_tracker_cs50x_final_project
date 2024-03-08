@@ -6,7 +6,7 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
-from helpers import apology, login_required, baby_required
+from helpers import apology, login_required, baby_required, sort_babies
 
 app = Flask(__name__)
 
@@ -29,7 +29,7 @@ def after_request(response):
 @login_required
 def index():
     """Show babies"""
-    babies = db.execute("SELECT * FROM babies WHERE user_id = ?",
+    session["babies"] = db.execute("SELECT * FROM babies WHERE user_id = ? ORDER BY baby_name",
                         session["user_id"])
 
     if request.method == "POST":
@@ -47,7 +47,7 @@ def index():
             flash(f"Baby {baby_name} has been successfully added.")
             return redirect("/")
 
-    return render_template("index.html", babies=babies)
+    return render_template("index.html", babies=session["babies"])
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -80,9 +80,9 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["user_id"]
-        session["babies"] = db.execute(
-        "SELECT * FROM babies WHERE user_id = ?",
-        session["user_id"])
+        # session["babies"] = db.execute(
+        # "SELECT * FROM babies WHERE user_id = ? ORDER BY baby_name",
+        # session["user_id"])
 
         # Redirect user to home page
         # flash("Successfully logged in!")
@@ -262,6 +262,23 @@ def milestone():
     return render_template("milestone.html", babies=session["babies"])
 
 
+@app.route("/sleep/history/<int:baby_id>", methods=["GET", "POST"])
+@login_required
+@baby_required
+def sleep_history(baby_id):
+    if not any(baby["baby_id"] == baby_id for baby in session["babies"]):
+            return apology("That baby was not found", 403)
+    
+    if request.method == "POST":
+        sleep_id = int(request.form.get("delete"))
+        db.execute("DELETE FROM sleeps WHERE sleep_id = ?", sleep_id)
+        flash("Milestone deleted")
+
+    babies = sort_babies(session["babies"], baby_id)
+    nappies = db.execute("SELECT * FROM nappies WHERE baby_id = ?", baby_id)
+    return render_template("milestone_history.html", babies=babies, nappies=nappies)
+
+
 @app.route("/milestone/history/<int:baby_id>", methods=["GET", "POST"])
 @login_required
 @baby_required
@@ -269,9 +286,11 @@ def milestone_history(baby_id):
     if not any(baby["baby_id"] == baby_id for baby in session["babies"]):
             return apology("That baby was not found", 403)
 
-    babies = session["babies"]
-    baby_index = [i for i, baby in enumerate(babies) if baby.get("baby_id") == baby_id][0]
-    this_baby = babies.pop(baby_index)
-    babies.insert(0, this_baby)
+    if request.method == "POST":
+        milestone_id = int(request.form.get("delete"))
+        db.execute("DELETE FROM milestones WHERE milestone_id = ?", milestone_id)
+        flash("Milestone deleted")
+
+    babies = sort_babies(session["babies"], baby_id)
     milestones = db.execute("SELECT * FROM milestones WHERE baby_id = ?", baby_id)
-    return render_template("milestone_history.html", babies=babies, milestones=milestones)
+    return render_template("milestone_history.html", babies=babies, milestones=milestones, baby_id=baby_id)

@@ -27,6 +27,12 @@
             <tr>
                 <td>{{ milestone["timestamp"][:11] }}</td>
                 <td>{{ milestone["description"] }}</td>
+                <td>
+                    <form action="/milestone/history/{{ baby_id }}" method="POST">
+                        <input type="hidden" name="delete" value="{{ milestone['milestone_id'] }}">
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

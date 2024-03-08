@@ -56,3 +56,8 @@ def baby_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def sort_babies(babies, baby_id):
+    baby_index = [i for i, baby in enumerate(babies) if baby.get("baby_id") == baby_id][0]
+    this_baby = babies.pop(baby_index)
+    babies.insert(0, this_baby)
+    return babies
