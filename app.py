@@ -253,10 +253,25 @@ def milestone():
         milestone_time = datetime.fromisoformat(request.form.get("milestone_time"))
         description = request.form.get("description")
 
-        db.execute("INSERT INTO milestones (baby_id, description, timestamp) VALUES (?, ?, ?)", baby_id, milestone_time, description)
+        db.execute("INSERT INTO milestones (baby_id, description, timestamp) VALUES (?, ?, ?)", baby_id, description, milestone_time)
 
         baby_name = [baby["baby_name"] for baby in session["babies"] if baby.get("baby_id") == baby_id][0]
         flash(f"Milestone for {baby_name} successfully recorded")
-        return redirect("/")
+        return redirect(f"/milestone/history/{baby_id}")
 
     return render_template("milestone.html", babies=session["babies"])
+
+
+@app.route("/milestone/history/<int:baby_id>", methods=["GET", "POST"])
+@login_required
+@baby_required
+def milestone_history(baby_id):
+    if not any(baby["baby_id"] == baby_id for baby in session["babies"]):
+            return apology("That baby was not found", 403)
+
+    babies = session["babies"]
+    baby_index = [i for i, baby in enumerate(babies) if baby.get("baby_id") == baby_id][0]
+    this_baby = babies.pop(baby_index)
+    babies.insert(0, this_baby)
+    milestones = db.execute("SELECT * FROM milestones WHERE baby_id = ?", baby_id)
+    return render_template("milestone_history.html", babies=babies, milestones=milestones)

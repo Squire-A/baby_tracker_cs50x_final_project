@@ -5,24 +5,30 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/milestone" method="post">
-        <div class="mb-3">
-            <select class="form-select mx-auto w-auto" id="baby_id" name="baby_id" type="text">
-                {% for baby in babies %}
-                    <option value="{{ baby['baby_id'] }}">{{ baby["baby_name"] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="milestone_time">When did the milestone happen?</label>
-            <input type="datetime-local" id="milestone_time" name="milestone_time" max="" required>
-        </div>
-        <div class="mb-3">
-            <label for="end_time">What was the milestone? </label>
-            <input type="text" id="description" name="description" max="" required>
-        </div>
-        <button class="btn btn-primary" type="submit">Log Milestone</button>
-    </form>
+    <div class="mb-3">
+        <form action="/milestone" method="post">
+            <div class="mb-3">
+                <select class="form-select mx-auto w-auto" id="baby_id" name="baby_id" type="text">
+                    {% for baby in babies %}
+                        <option value="{{ baby['baby_id'] }}">{{ baby["baby_name"] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="milestone_time">When did the milestone happen?</label>
+                <input type="datetime-local" id="milestone_time" name="milestone_time" max="" required>
+            </div>
+            <div class="mb-3">
+                <label for="description">What was the milestone? </label>
+                <input type="text" id="description" name="description" max="" required>
+            </div>
+            <button class="btn btn-primary" type="submit">Log Milestone</button>
+        </form>
+    </div>
+    <div class="mb-3">
+            <a href="/milestone/history/{{ babies[0]['baby_id'] }}"><button class="btn btn-secondary" type="button" id="history_button"> Milestone History</button></a>
+        </form>
+    </div>
     <script>
         const now = new Date();
         const formattedNow = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
