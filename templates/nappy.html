@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Buy
+{% endblock %}
+
+{% block main %}
+    <form action="/nappy" method="post">
+        <div class="mb-3">
+            <label for="baby_id">Which baby? </label>
+            <select class="form-select mx-auto w-auto" id="baby_id" name="baby_id" type="text">
+                {% for baby in babies %}
+                    <option value="{{ baby['baby_id'] }}">{{ baby["baby_name"] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="nappy_time">What time did you change the nappy? </label>
+            <input class="form-control mx-auto w-auto" type="datetime-local" id="nappy_time" name="nappy_time" max="" required>
+        </div>
+        <div class="mb-3">
+            <label>Nappy Contents:</label>
+        </div>
+        <div class=mb-3>
+            <input type="radio" class="btn-check" name="nappy_contents" id="wet" autocomplete="off" value="wet" required>
+            <label class="btn btn-outline-warning" for="wet">Wet</label>
+
+            <input type="radio" class="btn-check" name="nappy_contents" id="dirty" autocomplete="off" value="dirty">
+            <label class="btn btn-outline-dark" for="dirty">Dirty</label>
+
+            <input type="radio" class="btn-check" name="nappy_contents" id="both" autocomplete="off" value="both">
+            <label class="btn btn-outline-danger" for="both">Both</label>
+        </div>
+        <div class="mb-3">
+            <label>Nappy Size:</label>
+        </div>
+        <div class="mb-3">
+            <input type="radio" class="btn-check" name="nappy_size" id="small" autocomplete="off" value="S" required>
+            <label class="btn btn-outline-primary btn-sm" for="small">Small</label>
+
+            <input type="radio" class="btn-check" name="nappy_size" id="medium" autocomplete="off" value="M">
+            <label class="btn btn-outline-primary" for="medium">Medium</label>
+
+            <input type="radio" class="btn-check" name="nappy_size" id="large" autocomplete="off" value="L">
+            <label class="btn btn-outline-primary btn-lg" for="large">Large</label>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Log Nappy</button>
+    </form>
+    <script>
+        const now = new Date();
+        const formattedNow = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+        document.getElementById("feed_time").setAttribute("max", formattedNow);
+    </script>
+{% endblock %}
