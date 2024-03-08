@@ -182,7 +182,7 @@ def sleep():
                    baby_id, start_time, end_time, duration)
         baby_name = [baby["baby_name"] for baby in session["babies"] if baby.get("baby_id") == baby_id][0]
         flash(f"Sleep for {baby_name} successfully logged!")
-        return redirect("/")
+        return redirect(f"/sleep/history/{baby_id}")
 
     return render_template("sleep.html", babies=session["babies"])
 
@@ -272,11 +272,11 @@ def sleep_history(baby_id):
     if request.method == "POST":
         sleep_id = int(request.form.get("delete"))
         db.execute("DELETE FROM sleeps WHERE sleep_id = ?", sleep_id)
-        flash("Milestone deleted")
+        flash("Sleep deleted")
 
     babies = sort_babies(session["babies"], baby_id)
-    nappies = db.execute("SELECT * FROM nappies WHERE baby_id = ?", baby_id)
-    return render_template("milestone_history.html", babies=babies, nappies=nappies)
+    sleeps = db.execute("SELECT * FROM sleeps WHERE baby_id = ?", baby_id)
+    return render_template("sleep_history.html", babies=babies, sleeps=sleeps, baby_id=baby_id)
 
 
 @app.route("/milestone/history/<int:baby_id>", methods=["GET", "POST"])

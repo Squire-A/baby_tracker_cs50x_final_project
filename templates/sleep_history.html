@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Milestone History
+{% endblock %}
+
+{% block main %}
+    <form action="/milestone/history" method="GET">
+        <div class="mb-3">
+            <select class="form-select mx-auto w-auto" id="baby_id" name="baby_id" type="text">
+                {% for baby in babies %}
+                    <option value="{{ baby['baby_id'] }}">{{ baby["baby_name"] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary d-none">Submit (hidden button)</button>
+    </form>
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Duration (mins)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sleep in sleeps %}
+            <tr>
+                <td>{{ sleep["start_time"] }}</td>
+                <td>{{ sleep["end_time"] }}</td>
+                <td>{{ sleep["duration_minutes"] }}</td>
+                <td>
+                    <form action="/sleep/history/{{ baby_id }}" method="POST">
+                        <input type="hidden" name="delete" value="{{ sleep['sleep_id'] }}">
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        const babySelect = document.getElementById("baby_id");
+    
+        babySelect.addEventListener("change", function() {
+            const selectedBabyId = this.value;
+            const newUrl = "/sleep/history/" + selectedBabyId;
+            window.location.href = newUrl;
+        });
+    </script>
+{% endblock %}
