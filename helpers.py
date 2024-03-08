@@ -48,3 +48,11 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def baby_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("babies") is None:
+            return redirect("/")
+        return f(*args, **kwargs)
+    return decorated_function
+

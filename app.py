@@ -6,7 +6,7 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
-from helpers import apology, login_required
+from helpers import apology, login_required, baby_required
 
 app = Flask(__name__)
 
@@ -168,6 +168,7 @@ def account():
 
 @app.route("/sleep", methods=["GET", "POST"])
 @login_required
+@baby_required
 def sleep():
     if request.method == "POST":
 
@@ -188,6 +189,7 @@ def sleep():
 
 @app.route("/feed", methods=["GET", "POST"])
 @login_required
+@baby_required
 def feed():
     if request.method =="POST":
 
@@ -210,6 +212,7 @@ def feed():
 
 @app.route("/nappy", methods=["GET", "POST"])
 @login_required
+@baby_required
 def nappy():
     if request.method =="POST":
         baby_id = int(request.form.get("baby_id"))
@@ -242,6 +245,7 @@ def nappy():
 
 @app.route("/milestone", methods=["GET", "POST"])
 @login_required
+@baby_required
 def milestone():
 
     if request.method =="POST":
