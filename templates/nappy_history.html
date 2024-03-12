@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Feed History
+    Nappy History
 {% endblock %}
 
 {% block main %}
-    <form action="/feed/history" method="GET">
+    <form action="/nappy/history" method="GET">
         <div class="mb-3">
             <select class="form-select mx-auto w-auto" id="baby_id" name="baby_id" type="text">
                 {% for baby in babies %}
@@ -19,21 +19,21 @@
         <thead>
             <tr>
                 <th>Time</th>
-                <th>Type</th>
-                <th>Duration (mins)</th>
-                <th>Volume (ml)</th>
+                <th>Wet</th>
+                <th>Dirty</th>
+                <th>Size</th>
             </tr>
         </thead>
         <tbody>
-            {% for feed in feeds %}
+            {% for nappy in nappies %}
             <tr>
-                <td>{{ feed["timestamp"] }}</td>
-                <td>{{ feed["type"] }}</td>
-                <td>{{ feed["duration_minutes"] }}</td>
-                <td>{{ feed["quantity_ml"] }}</td>
+                <td>{{ nappy["timestamp"] }}</td>
+                <td>{{ nappy["wet"] }}</td>
+                <td>{{ nappy["dirty"] }}</td>
+                <td>{{ nappy["nappy_size"] }}</td>
                 <td>
-                    <form action="/feed/history/{{ baby_id }}" method="POST">
-                        <input type="hidden" name="delete" value="{{ feed['feed_id'] }}">
+                    <form action="/nappy/history/{{ baby_id }}" method="POST">
+                        <input type="hidden" name="delete" value="{{ nappy['change_id'] }}">
                         <button class="btn btn-danger btn-sm">Delete</button>
                     </form>
                 </td>
@@ -46,7 +46,7 @@
     
         babySelect.addEventListener("change", function() {
             const selectedBabyId = this.value;
-            const newUrl = "/feed/history/" + selectedBabyId;
+            const newUrl = "/nappy/history/" + selectedBabyId;
             window.location.href = newUrl;
         });
     </script>

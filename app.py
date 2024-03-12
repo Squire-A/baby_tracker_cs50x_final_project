@@ -238,7 +238,7 @@ def nappy():
 
         baby_name = [baby["baby_name"] for baby in session["babies"] if baby.get("baby_id") == baby_id][0]
         flash(f"Nappy for {baby_name} successfully logged")
-        return redirect("/")
+        return redirect(f"/nappy/history/{baby_id}")
 
     return render_template("nappy.html", babies=session["babies"])
 
@@ -275,7 +275,7 @@ def sleep_history(baby_id):
         flash("Sleep deleted")
 
     babies = sort_babies(session["babies"], baby_id)
-    sleeps = db.execute("SELECT * FROM sleeps WHERE baby_id = ?", baby_id)
+    sleeps = db.execute("SELECT * FROM sleeps WHERE baby_id = ? ORDER BY start_time DESC", baby_id)
     return render_template("sleep_history.html", babies=babies, sleeps=sleeps, baby_id=baby_id)
 
 
@@ -292,7 +292,7 @@ def milestone_history(baby_id):
         flash("Milestone deleted")
 
     babies = sort_babies(session["babies"], baby_id)
-    milestones = db.execute("SELECT * FROM milestones WHERE baby_id = ?", baby_id)
+    milestones = db.execute("SELECT * FROM milestones WHERE baby_id = ? ORDER BY timestamp DESC", baby_id)
     return render_template("milestone_history.html", babies=babies, milestones=milestones, baby_id=baby_id)
 
 
@@ -309,5 +309,22 @@ def feed_history(baby_id):
         flash("Feed deleted")
 
     babies = sort_babies(session["babies"], baby_id)
-    feeds = db.execute("SELECT * FROM feeds WHERE baby_id = ?", baby_id)
+    feeds = db.execute("SELECT * FROM feeds WHERE baby_id = ? ORDER BY timestamp DESC", baby_id)
     return render_template("feed_history.html", babies=babies, feeds=feeds, baby_id=baby_id)
+
+
+@app.route("/nappy/history/<int:baby_id>", methods=["GET", "POST"])
+@login_required
+@baby_required
+def nappy_history(baby_id):
+    if not any(baby["baby_id"] == baby_id for baby in session["babies"]):
+            return apology("That baby was not found", 403)
+
+    if request.method == "POST":
+        change_id = int(request.form.get("delete"))
+        db.execute("DELETE FROM nappy_changes WHERE change_id = ?", change_id)
+        flash("Nappy details deleted")
+
+    babies = sort_babies(session["babies"], baby_id)
+    nappies = db.execute("SELECT * FROM nappy_changes WHERE baby_id = ? ORDER BY timestamp DESC", baby_id)
+    return render_template("nappy_history.html", babies=babies, nappies=nappies, baby_id=baby_id)
