@@ -204,7 +204,7 @@ def feed():
 
         baby_name = [baby["baby_name"] for baby in session["babies"] if baby.get("baby_id") == baby_id][0]
         flash(f"Feed for {baby_name} successfully logged")
-        return redirect("/")
+        return redirect(f"/feed/history/{baby_id}")
 
 
     return render_template("feed.html", babies=session["babies"])
@@ -294,3 +294,20 @@ def milestone_history(baby_id):
     babies = sort_babies(session["babies"], baby_id)
     milestones = db.execute("SELECT * FROM milestones WHERE baby_id = ?", baby_id)
     return render_template("milestone_history.html", babies=babies, milestones=milestones, baby_id=baby_id)
+
+
+@app.route("/feed/history/<int:baby_id>", methods=["GET", "POST"])
+@login_required
+@baby_required
+def feed_history(baby_id):
+    if not any(baby["baby_id"] == baby_id for baby in session["babies"]):
+            return apology("That baby was not found", 403)
+
+    if request.method == "POST":
+        feed_id = int(request.form.get("delete"))
+        db.execute("DELETE FROM feeds WHERE feed_id = ?", feed_id)
+        flash("Feed deleted")
+
+    babies = sort_babies(session["babies"], baby_id)
+    feeds = db.execute("SELECT * FROM feeds WHERE baby_id = ?", baby_id)
+    return render_template("feed_history.html", babies=babies, feeds=feeds, baby_id=baby_id)

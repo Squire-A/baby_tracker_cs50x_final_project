@@ -5,35 +5,40 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/feed" method="post">
-        <div class="mb-3">
-            <select class="form-select mx-auto w-auto" id="baby_id" name="baby_id" type="text">
-                {% for baby in babies %}
-                    <option value="{{ baby['baby_id'] }}">{{ baby["baby_name"] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="mb-3">
-            <input type="radio" class="btn-check" name="options-outlined" id="btn-check-outlined" autocomplete="off" value="Breast" required>
-            <label class="btn btn-outline-primary" for="btn-check-outlined">Breast</label>
+    <div class="mb-3">
+        <form action="/feed" method="post">
+            <div class="mb-3">
+                <select class="form-select mx-auto w-auto" id="baby_id" name="baby_id" type="text">
+                    {% for baby in babies %}
+                        <option value="{{ baby['baby_id'] }}">{{ baby["baby_name"] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <input type="radio" class="btn-check" name="options-outlined" id="btn-check-outlined" autocomplete="off" value="Breast" required>
+                <label class="btn btn-outline-primary" for="btn-check-outlined">Breast</label>
 
-            <input type="radio" class="btn-check" name="options-outlined" id="btn-check-2-outlined" autocomplete="off" value="Bottle">
-            <label class="btn btn-outline-primary" for="btn-check-2-outlined">Bottle</label>
-        </div>
-        <div class="mb-3">
-            <label for="feed_time">What time did they feed? </label>
-            <input type="datetime-local" id="feed_time" name="feed_time" max="" required>
-        </div>
-        <div class="mb-3">
-            <label for="feed_length">How long did they feed for (minutes)? </label>
-            <input type="number" id="feed_length" name="feed_length" placeholder="Optional" style="width: 90px;">
-        </div>
-        <div class="mb-3">
-            <label for="feed_volume">How much did they have (ml)? </label>
-            <input type="number" id="feed_volume" name="feed_volume" placeholder="Optional" style="width: 90px;">
-        </div>
-        <button class="btn btn-primary" type="submit">Log Feed</button>
-    </form>
+                <input type="radio" class="btn-check" name="options-outlined" id="btn-check-2-outlined" autocomplete="off" value="Bottle">
+                <label class="btn btn-outline-primary" for="btn-check-2-outlined">Bottle</label>
+            </div>
+            <div class="mb-3">
+                <label for="feed_time">What time did they feed? </label>
+                <input type="datetime-local" id="feed_time" name="feed_time" max="" required>
+            </div>
+            <div class="mb-3">
+                <label for="feed_length">How long did they feed for (minutes)? </label>
+                <input type="number" id="feed_length" name="feed_length" placeholder="Optional" style="width: 90px;">
+            </div>
+            <div class="mb-3">
+                <label for="feed_volume">How much did they have (ml)? </label>
+                <input type="number" id="feed_volume" name="feed_volume" placeholder="Optional" style="width: 90px;">
+            </div>
+            <button class="btn btn-primary" type="submit">Log Feed</button>
+        </form>
+    </div>
+    <div class="mb-3">
+        <a href="/feed/history/{{ babies[0]['baby_id'] }}"><button class="btn btn-secondary" type="button" id="history_button">Feed History</button></a>
+    </div>
     <script>
         const now = new Date();
         const formattedNow = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM

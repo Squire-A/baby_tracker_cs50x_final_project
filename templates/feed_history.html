@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/sleep/history" method="GET">
+    <form action="/feed/history" method="GET">
         <div class="mb-3">
             <select class="form-select mx-auto w-auto" id="baby_id" name="baby_id" type="text">
                 {% for baby in babies %}
@@ -18,20 +18,22 @@
     <table class="table table-striped table-sm">
         <thead>
             <tr>
-                <th>Start Time</th>
-                <th>End Time</th>
+                <th>Time</th>
+                <th>Type</th>
                 <th>Duration (mins)</th>
+                <th>Volume (ml)</th>
             </tr>
         </thead>
         <tbody>
-            {% for sleep in sleeps %}
+            {% for feed in feeds %}
             <tr>
-                <td>{{ sleep["start_time"] }}</td>
-                <td>{{ sleep["end_time"] }}</td>
-                <td>{{ sleep["duration_minutes"] }}</td>
+                <td>{{ feed["timestamp"] }}</td>
+                <td>{{ feed["type"] }}</td>
+                <td>{{ feed["duration_minutes"] }}</td>
+                <td>{{ feed["quantity_ml"] }}</td>
                 <td>
-                    <form action="/sleep/history/{{ baby_id }}" method="POST">
-                        <input type="hidden" name="delete" value="{{ sleep['sleep_id'] }}">
+                    <form action="/feed/history/{{ baby_id }}" method="POST">
+                        <input type="hidden" name="delete" value="{{ feed['feed_id'] }}">
                         <button class="btn btn-danger btn-sm">Delete</button>
                     </form>
                 </td>
@@ -44,7 +46,7 @@
     
         babySelect.addEventListener("change", function() {
             const selectedBabyId = this.value;
-            const newUrl = "/sleep/history/" + selectedBabyId;
+            const newUrl = "/feed/history/" + selectedBabyId;
             window.location.href = newUrl;
         });
     </script>
