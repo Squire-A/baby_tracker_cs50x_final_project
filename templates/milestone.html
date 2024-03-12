@@ -31,7 +31,6 @@
     <script>
         const now = new Date();
         const formattedNow = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
-        document.getElementById("start_time").setAttribute("max", formattedNow);
-        document.getElementById("end_time").setAttribute("max", formattedNow);
+        document.getElementById("milestone_time").setAttribute("max", formattedNow);
     </script>
 {% endblock %}
