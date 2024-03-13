@@ -1,10 +1,15 @@
 {% extends "layout.html" %}
 
+{% block head %}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
 {% block title %}
     Feed History
 {% endblock %}
 
 {% block main %}
+
     <form action="/feed/history" method="GET">
         <div class="mb-3">
             <select class="form-select mx-auto w-auto" id="baby_id" name="baby_id" type="text">
@@ -15,6 +20,10 @@
         </div>
         <button type="submit" class="btn btn-primary d-none">Submit (hidden button)</button>
     </form>
+
+    <h2>Feed History</h2>
+    <div id="plot"></div>
+
     <table class="table table-striped table-sm">
         <thead>
             <tr>
@@ -41,6 +50,12 @@
             {% endfor %}
         </tbody>
     </table>
+    
+    <script>
+        var plotData = {{ plot_data | safe }};  // Access data from template
+
+        Plotly.plot("plot", plotData, {});
+    </script>
     <script>
         const babySelect = document.getElementById("baby_id");
     
