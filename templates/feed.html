@@ -27,11 +27,11 @@
             </div>
             <div class="mb-3">
                 <label for="feed_length">How long did they feed for (minutes)? </label>
-                <input type="number" id="feed_length" name="feed_length" placeholder="Optional" style="width: 90px;">
+                <input type="number" id="feed_length" name="feed_length" placeholder="Required" style="width: 90px;">
             </div>
             <div class="mb-3">
                 <label for="feed_volume">How much did they have (ml)? </label>
-                <input type="number" id="feed_volume" name="feed_volume" placeholder="Optional" style="width: 90px;">
+                <input type="number" id="feed_volume" name="feed_volume" placeholder="Required" style="width: 90px;">
             </div>
             <button class="btn btn-primary" type="submit">Log Feed</button>
         </form>
@@ -44,4 +44,54 @@
         const formattedNow = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
         document.getElementById("feed_time").setAttribute("max", formattedNow);
     </script>
+    <script>
+        const feedLengthInput = document.getElementById("feed_length");
+        const feedVolumeInput = document.getElementById("feed_volume");
+        const feedLengthLabel = document.querySelector('label[for="feed_length"]');
+        const feedVolumeLabel = document.querySelector('label[for="feed_volume"]');
+      
+        const handleRadioChange = (event) => {
+          const selectedOption = event.target.value;
+          if (selectedOption === "Breast") {
+            feedLengthLabel.style.display = "inline";
+            feedVolumeLabel.style.display = "none";
+            feedLengthInput.style.display = "inline"; 
+            feedVolumeInput.style.display = "none";
+
+            feedLengthInput.setAttribute("required", true);
+            feedVolumeInput.removeAttribute("required");
+
+          } else if (selectedOption === "Bottle") {
+            feedLengthLabel.style.display = "none";
+            feedVolumeLabel.style.display = "inline";
+            feedLengthInput.style.display = "none"; 
+            feedVolumeInput.style.display = "inline";
+            
+            feedLengthInput.removeAttribute("required");
+            feedVolumeInput.setAttribute("required", true);
+            
+
+          } else {
+            feedLengthInput.style.display = "none";
+            feedVolumeInput.style.display = "none"; 
+            feedLengthLabel.style.display = "none";
+            feedVolumeLabel.style.display = "none";
+
+            feedLengthInput.removeAttribute("required");
+            feedVolumeInput.removeAttribute("required");
+
+          }
+        };
+      
+        const radioButtons = document.querySelectorAll('input[name="options-outlined"]');
+        radioButtons.forEach(radioButton => radioButton.addEventListener("change", handleRadioChange));
+      
+        // Set initial state (hide all initially)
+        feedLengthLabel.style.display = "none";
+        feedVolumeLabel.style.display = "none";
+        feedLengthInput.style.display = "none";
+        feedVolumeInput.style.display = "none";
+        feedLengthInput.removeAttribute("required");
+        feedVolumeInput.removeAttribute("required");
+      </script>
 {% endblock %}

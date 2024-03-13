@@ -196,14 +196,20 @@ def feed():
         baby_id = int(request.form.get("baby_id"))
         feed_time = datetime.fromisoformat(request.form.get("feed_time"))
         type = request.form.get("options-outlined")
-        feed_length = request.form.get("feed_length")
-        feed_volume = request.form.get("feed_volume")
-
+        if type == "Breast":
+            feed_length = int(request.form.get("feed_length"))
+            feed_volume = ''
+        elif type == "Bottle":
+            feed_volume = int(request.form.get("feed_volume"))
+            feed_length = ''
+        else:
+            return apology("Type not recognised", 403)
+        
         db.execute("INSERT INTO feeds (baby_id, timestamp, type, quantity_ml, duration_minutes) VALUES (?, ?, ?, ?, ?)",
                    baby_id, feed_time, type, feed_volume, feed_length)
 
         baby_name = [baby["baby_name"] for baby in session["babies"] if baby.get("baby_id") == baby_id][0]
-        flash(f"Feed for {baby_name} successfully logged")
+        flash(f"{type} feed for {baby_name} successfully logged")
         return redirect(f"/feed/history/{baby_id}")
 
 
