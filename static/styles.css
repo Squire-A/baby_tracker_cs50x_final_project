@@ -21,3 +21,20 @@ nav .navbar-brand .green
 {
     color: #2e944b;
 }
+
+.scrollable {
+    max-width: 1200px;
+    max-height: 300px;
+    margin: auto;
+    overflow-y: auto;
+}
+
+.scrollable thead th {
+    position: sticky;
+    top: 0;
+}
+
+.history-plot {
+    max-width: 1200px;
+    margin: auto;
+}
