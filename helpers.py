@@ -70,27 +70,27 @@ def sort_babies(babies, baby_id):
     babies.insert(0, this_baby)
     return babies
 
-def feed_figure(feeds):
-    df = pd.DataFrame(feeds)
-    df["timestamp"] = pd.to_datetime(df["timestamp"])
-    daily_feeding_data = df.groupby([df['timestamp'].dt.date, 'type'])[['duration_minutes', 'quantity_ml']].sum().unstack(fill_value=0)
+# def feed_figure(feeds):
+#     df = pd.DataFrame(feeds)
+#     df["timestamp"] = pd.to_datetime(df["timestamp"])
+#     daily_feeding_data = df.groupby([df['timestamp'].dt.date, 'type'])[['duration_minutes', 'quantity_ml']].sum().unstack(fill_value=0)
 
-    fig, ax1 = plt.subplots()
-    ax2 = ax1.twinx()
-    width = 0.2
-    daily_feeding_data["duration_minutes"].plot(kind='bar', ax=ax1, color='skyblue', position=1, width=width, legend=None)
-    daily_feeding_data["quantity_ml"].plot(kind='bar', ax=ax2, color='coral', position=0, width=width, legend=None)
-    plt.title("Daily Feed Totals by Type")
-    ax1.set_xlabel("Date")
-    ax1.set_ylabel("Breast: Total Time (mins)", color='skyblue')
-    ax1.tick_params(axis='y', labelcolor='skyblue')
-    ax2.set_ylabel("Bottle: Total Quantity (ml)", color='coral')
-    ax2.tick_params(axis='y', labelcolor='coral')
-    plt.tight_layout()
+#     fig, ax1 = plt.subplots()
+#     ax2 = ax1.twinx()
+#     width = 0.2
+#     daily_feeding_data["duration_minutes"].plot(kind='bar', ax=ax1, color='skyblue', position=1, width=width, legend=None)
+#     daily_feeding_data["quantity_ml"].plot(kind='bar', ax=ax2, color='coral', position=0, width=width, legend=None)
+#     plt.title("Daily Feed Totals by Type")
+#     ax1.set_xlabel("Date")
+#     ax1.set_ylabel("Breast: Total Time (mins)", color='skyblue')
+#     ax1.tick_params(axis='y', labelcolor='skyblue')
+#     ax2.set_ylabel("Bottle: Total Quantity (ml)", color='coral')
+#     ax2.tick_params(axis='y', labelcolor='coral')
+#     plt.tight_layout()
 
-    output = io.BytesIO()
-    FigureCanvasAgg(fig).print_png(output)
-    return output.getvalue(), 'image/png'
+#     output = io.BytesIO()
+#     FigureCanvasAgg(fig).print_png(output)
+#     return output.getvalue(), 'image/png'
 
 def feed_fig_px(feeds):
     df = pd.DataFrame(feeds)
@@ -109,4 +109,26 @@ def feed_fig_px(feeds):
     fig = px.bar(daily_data_indexed, x='date', y=['Breast (minutes)', 'Bottle (ml)'], barmode='group', title='Sum of Feeds by Day', labels=labels)
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
+    return graphJSON
+
+def sleep_fig_px(sleeps): 
+    df = pd.DataFrame(sleeps)
+    df["start_time"] = pd.to_datetime(df["start_time"])
+    df["end_time"] = pd.to_datetime(df["end_time"])
+    df["start_date"] = df["start_time"].dt.date
+    df["begin_hour"] = df["start_time"].dt.hour
+    df["overnight"] = (df["begin_hour"] >= 18) | (df["begin_hour"] < 6)
+    df["start_date"] = df["start_date"].where(df["begin_hour"] > 6, (df["start_time"] - pd.Timedelta(days=1)).dt.date)
+    df = df.groupby(["start_date", "overnight"])["duration_minutes"].sum()
+    df = df.reset_index()
+    df["hours"] = (df["duration_minutes"] / 60).round(1)
+    df["overnight"] = df["overnight"].apply(lambda x: "Night" if x else "Day")
+    df.rename(columns = {"overnight": "Night/Day", "start_date": "Date"}, inplace=True)
+    
+    labels = {"hours": "Hours of Sleep"}
+    colors = {"Night": "#04658F", "Day": "#FF8C00"}
+    
+    fig = px.bar(df, x='Date', y='hours', color='Night/Day', labels=labels, title="Total Sleep by Day", color_discrete_map=colors)
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    
     return graphJSON

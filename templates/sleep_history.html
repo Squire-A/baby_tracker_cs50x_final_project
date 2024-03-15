@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 
+{% block head %}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
 {% block title %}
     Sleep History
 {% endblock %}
@@ -15,12 +19,18 @@
         </div>
         <button type="submit" class="btn btn-primary d-none">Submit (hidden button)</button>
     </form>
+
+    <h2>Sleep History</h2>
+    <div class="history-plot" id="plot"></div>
+    
+<div class="scrollable">    
     <table class="table table-striped table-sm">
         <thead>
             <tr>
                 <th>Start Time</th>
                 <th>End Time</th>
                 <th>Duration (mins)</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -39,6 +49,13 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+    <script>
+        var plotData = {{ plot_data | safe }};
+
+        Plotly.plot("plot", plotData, {});
+    </script>
+
     <script>
         const babySelect = document.getElementById("baby_id");
     

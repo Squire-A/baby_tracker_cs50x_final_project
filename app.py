@@ -6,7 +6,7 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
-from helpers import apology, login_required, baby_required, sort_babies, feed_figure, feed_fig_px
+from helpers import apology, login_required, baby_required, sort_babies, feed_fig_px, sleep_fig_px
 
 app = Flask(__name__)
 
@@ -282,7 +282,13 @@ def sleep_history(baby_id):
 
     babies = sort_babies(session["babies"], baby_id)
     sleeps = db.execute("SELECT * FROM sleeps WHERE baby_id = ? ORDER BY start_time DESC", baby_id)
-    return render_template("sleep_history.html", babies=babies, sleeps=sleeps, baby_id=baby_id)
+    
+    if sleeps:
+        plot_data = sleep_fig_px(sleeps)
+    else:
+        plot_data = None
+    
+    return render_template("sleep_history.html", babies=babies, sleeps=sleeps, baby_id=baby_id, plot_data=plot_data)
 
 
 @app.route("/milestone/history/<int:baby_id>", methods=["GET", "POST"])
