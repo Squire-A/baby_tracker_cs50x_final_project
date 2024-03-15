@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS babies (
     birthdate DATE NOT NULL,
     gender TEXT CHECK (gender IN ('Male', 'Female', 'Unspecified')),
     user_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS sleeps (
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS sleeps (
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP NOT NULL,
     duration_minutes INTEGER,
-    FOREIGN KEY (baby_id) REFERENCES babies(baby_id)
+    FOREIGN KEY (baby_id) REFERENCES babies(baby_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS nappy_changes (
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS nappy_changes (
     timestamp TIMESTAMP NOT NULL,
     wet BOOLEAN NOT NULL,
     dirty BOOLEAN NOT NULL,
-    nappy_size CHECK (nappy_size IN ('S', 'M', 'L')) DEFAULT NULL,
-    FOREIGN KEY (baby_id) REFERENCES babies(baby_id)
+    nappy_size VARCHAR(1) CHECK (nappy_size IN ('S', 'M', 'L')) DEFAULT NULL,
+    FOREIGN KEY (baby_id) REFERENCES babies(baby_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS feeds (
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS feeds (
     type TEXT CHECK (type IN ('Breast', 'Bottle')),
     quantity_ml INTEGER,
     duration_minutes INTEGER,
-    FOREIGN KEY (baby_id) REFERENCES babies(baby_id)
+    FOREIGN KEY (baby_id) REFERENCES babies(baby_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS milestones (
@@ -47,5 +47,5 @@ CREATE TABLE IF NOT EXISTS milestones (
     baby_id INTEGER NOT NULL,
     description TEXT NOT NULL,
     timestamp TIMESTAMP NOT NULL,
-    FOREIGN KEY (baby_id) REFERENCES babies(baby_id)
+    FOREIGN KEY (baby_id) REFERENCES babies(baby_id) ON DELETE CASCADE
 );

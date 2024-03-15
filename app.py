@@ -50,6 +50,29 @@ def index():
     return render_template("index.html", babies=session["babies"])
 
 
+@app.route("/delete_baby/<int:baby_id>", methods=["GET", "POST"])
+@login_required
+@baby_required
+def delete_baby(baby_id):
+    if not any(baby["baby_id"] == baby_id for baby in session["babies"]):
+            return apology("That page was not found", 404)
+        
+    if request.method == "POST":
+        delete_id = int(request.form.get("delete_baby"))
+        if not any(baby["baby_id"] == delete_id for baby in session["babies"]):
+            return apology("Something went wrong!", 403)
+        
+        
+        db.execute("DELETE FROM babies WHERE baby_id = ?", delete_id)
+        baby_name = [baby["baby_name"] for baby in session["babies"] if baby.get("baby_id") == baby_id][0]
+        flash(f"Baby {baby_name} was deleted")
+        return redirect("/")
+        
+    baby = db.execute("SELECT * FROM babies WHERE baby_id = ?", baby_id)[0]
+    print(baby)
+    return render_template("delete_baby.html", baby=baby)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
@@ -166,6 +189,15 @@ def account():
             return redirect("/")
 
 
+@app.route("/account/delete", methods=["GET", "POST"])
+@login_required
+def account_delete():
+    if request.method == "POST":
+        db.execute("DELETE FROM users WHERE user_id = ?", session["user_id"])
+        flash("User deleted")
+        return redirect("/logout")
+    return render_template("delete_user.html", user_id=session["user_id"])
+
 @app.route("/sleep", methods=["GET", "POST"])
 @login_required
 @baby_required
@@ -178,6 +210,8 @@ def sleep():
         start_time = datetime.fromisoformat(request.form.get("start_time"))
         end_time = datetime.fromisoformat(request.form.get("end_time"))
         duration = int((end_time - start_time).total_seconds()/60)
+        if duration < 0:
+            return apology("You can't sleep backwards in time!", 403)
         db.execute("INSERT INTO sleeps (baby_id, start_time, end_time, duration_minutes) VALUES (?, ?, ?, ?)",
                    baby_id, start_time, end_time, duration)
         baby_name = [baby["baby_name"] for baby in session["babies"] if baby.get("baby_id") == baby_id][0]
