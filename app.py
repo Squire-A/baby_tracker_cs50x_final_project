@@ -6,7 +6,7 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
-from helpers import apology, login_required, baby_required, sort_babies, feed_fig_px, sleep_fig_px
+from helpers import apology, login_required, baby_required, sort_babies, feed_fig_px, sleep_fig_px, nappy_fig_px
 
 app = Flask(__name__)
 
@@ -344,4 +344,9 @@ def nappy_history(baby_id):
 
     babies = sort_babies(session["babies"], baby_id)
     nappies = db.execute("SELECT * FROM nappy_changes WHERE baby_id = ? ORDER BY timestamp DESC", baby_id)
-    return render_template("nappy_history.html", babies=babies, nappies=nappies, baby_id=baby_id)
+    if nappies:
+        plot_data = nappy_fig_px(nappies)
+    else:
+        plot_data = None
+    
+    return render_template("nappy_history.html", babies=babies, nappies=nappies, baby_id=baby_id, plot_data=plot_data)

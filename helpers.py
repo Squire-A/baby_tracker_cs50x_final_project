@@ -132,3 +132,22 @@ def sleep_fig_px(sleeps):
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     
     return graphJSON
+
+def nappy_fig_px(nappies):
+    df = pd.DataFrame(nappies)
+    df["timestamp"] = pd.to_datetime(df["timestamp"])
+    df["date"] = df["timestamp"].dt.date
+    df["both"] = (df["wet"] & df["dirty"])
+    df["wet"] = df["wet"].where(df["both"] == 0, 0)
+    df["dirty"] = df["dirty"].where(df["both"] == 0, 0)
+    df = df.groupby(["date"])[["wet", "dirty", "both"]].sum()
+    df = df.reset_index()
+    df.rename(columns={"wet": "Wet", "dirty": "Dirty", "both": "Both"}, inplace=True)
+    
+    labels = {"value": "Number of Nappies", "variable": "Nappy Contents", "date": "Date"}
+    colors = {"Wet": "#FFCC00", "Dirty": "#9E5E05", "Both": "#9E7F05"}
+    fig = px.bar(df, x='date', y=['Wet', 'Dirty', 'Both'], labels=labels, color_discrete_map=colors)
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    
+    return graphJSON
+    

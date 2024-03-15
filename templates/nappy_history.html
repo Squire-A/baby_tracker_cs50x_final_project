@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 
+{% block head %}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
 {% block title %}
     Nappy History
 {% endblock %}
@@ -15,32 +19,44 @@
         </div>
         <button type="submit" class="btn btn-primary d-none">Submit (hidden button)</button>
     </form>
-    <table class="table table-striped table-sm">
-        <thead>
-            <tr>
-                <th>Time</th>
-                <th>Wet</th>
-                <th>Dirty</th>
-                <th>Size</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for nappy in nappies %}
-            <tr>
-                <td>{{ nappy["timestamp"] }}</td>
-                <td>{{ nappy["wet"] }}</td>
-                <td>{{ nappy["dirty"] }}</td>
-                <td>{{ nappy["nappy_size"] }}</td>
-                <td>
-                    <form action="/nappy/history/{{ baby_id }}" method="POST">
-                        <input type="hidden" name="delete" value="{{ nappy['change_id'] }}">
-                        <button class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    <h2>Nappy History</h2>
+    <div class="history-plot" id="plot"></div>
+
+    <div class="scrollable">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Wet</th>
+                    <th>Dirty</th>
+                    <th>Size</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for nappy in nappies %}
+                <tr>
+                    <td>{{ nappy["timestamp"] }}</td>
+                    <td>{{ nappy["wet"] }}</td>
+                    <td>{{ nappy["dirty"] }}</td>
+                    <td>{{ nappy["nappy_size"] }}</td>
+                    <td>
+                        <form action="/nappy/history/{{ baby_id }}" method="POST">
+                            <input type="hidden" name="delete" value="{{ nappy['change_id'] }}">
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        var plotData = {{ plot_data | safe }};
+
+        Plotly.plot("plot", plotData, {});
+    </script>
     <script>
         const babySelect = document.getElementById("baby_id");
     
