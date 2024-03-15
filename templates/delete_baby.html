@@ -7,8 +7,8 @@
 {% block main %}
 <div class="mb-3">
     <p>Are you sure you wish to delete this baby? Once deleted the data can not be retreived!</p>
-    <form action="/delete_baby/{{ baby["baby_id"] }}" method="POST">
-        <input type="hidden" name="delete_baby" value="{{ baby["baby_id"] }}"> 
+    <form action="/delete_baby/{{ baby['baby_id'] }}" method="POST">
+        <input type="hidden" name="delete_baby" value="{{ baby['baby_id'] }}"> 
         <button class="btn btn-danger btn-sm">Delete Baby</button>
     </form>
 </div>
