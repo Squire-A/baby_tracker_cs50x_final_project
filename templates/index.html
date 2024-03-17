@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <table class="table table-striped table-sm">
+    <table class="table table-striped table-bordered table-sm">
         <thead>
             <tr>
                 <th>Name</th>
@@ -14,16 +14,16 @@
                 <th>Delete</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="table-group-divider">
             {% for baby in babies %}
-            <tr>
+            <tr class="align-middle">
                 <td>{{ baby["baby_name"] }}</td>
                 <td>{{ baby["birthdate"] }}</td>
                 <td>{{ baby["gender"] }}</td>
                 <td><a href="/delete_baby/{{ baby["baby_id"] }}"><button class="btn btn-danger btn-sm">Delete</button></a></td>
             </tr>
             {% endfor %}
-            <tr>
+            <tr class="align-middle">
                 <form method="POST" action="/">
                     <td>
                         <input class="form-control w-auto mx-auto" type="text" placeholder="Baby's Name" maxlength="30" name="baby_name" id="baby_name" required>
@@ -32,12 +32,10 @@
                         <input class="form-control w-auto mx-auto" type="date" placeholder="Baby's DOB" name="baby_dob" id="baby_dob" max="" required>
                     </td>
                     <td>
-                        <!-- <label for="baby_gender"></label> -->
                         <select class="form-control w-auto mx-auto" id="baby_gender" name="baby_gender" required>
                             <option value="Unspecified">Prefer not to say</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
-
                         </select>
                     </td>
                     <td class="align-middle">

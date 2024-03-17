@@ -23,9 +23,9 @@
 
     <h2>Feed History</h2>
     <div class="history-plot" id="plot"></div>
-    
+
 <div class="scrollable">
-    <table class="table table-striped table-sm ">
+    <table class="table table-striped table-sm table-bordered">
         <thead>
             <tr>
                 <th>Time</th>
@@ -35,7 +35,7 @@
                 <th>Delete</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="table-group-divider">
             {% for feed in feeds %}
             <tr>
                 <td>{{ feed["timestamp"] }}</td>

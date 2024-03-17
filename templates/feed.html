@@ -8,13 +8,15 @@
     <div class="mb-3">
         <form action="/feed" method="post">
             <div class="mb-3">
-                <select class="form-select mx-auto w-auto" id="baby_id" name="baby_id" type="text">
+                <label class="inline-form" for="baby_id">Which baby? </label>
+                <select class="form-select mx-auto w-auto inline-form" id="baby_id" name="baby_id" type="text">
                     {% for baby in babies %}
                         <option value="{{ baby['baby_id'] }}">{{ baby["baby_name"] }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="mb-3">
+                <label>Breast or bottle feed?</label>
                 <input type="radio" class="btn-check" name="options-outlined" id="btn-check-outlined" autocomplete="off" value="Breast" required>
                 <label class="btn btn-outline-primary" for="btn-check-outlined">Breast</label>
 
@@ -22,16 +24,16 @@
                 <label class="btn btn-outline-primary" for="btn-check-2-outlined">Bottle</label>
             </div>
             <div class="mb-3">
-                <label for="feed_time">What time did they feed? </label>
-                <input type="datetime-local" id="feed_time" name="feed_time" max="" required>
+                <label for="feed_time">What time did they start feeding? </label>
+                <input class="form-control mx-auto w-auto inline-form" type="datetime-local" id="feed_time" name="feed_time" max="" required>
             </div>
             <div class="mb-3">
                 <label for="feed_length">How long did they feed for (minutes)? </label>
-                <input type="number" id="feed_length" name="feed_length" placeholder="Required" style="width: 90px;">
+                <input class="form-control mx-auto w-auto inline-form" type="number" id="feed_length" name="feed_length" placeholder="Required" style="width: 90px;">
             </div>
             <div class="mb-3">
                 <label for="feed_volume">How much did they have (ml)? </label>
-                <input type="number" id="feed_volume" name="feed_volume" placeholder="Required" style="width: 90px;">
+                <input class="form-control mx-auto w-auto" type="number" id="feed_volume" name="feed_volume" placeholder="Required" style="width: 90px;">
             </div>
             <button class="btn btn-primary" type="submit">Log Feed</button>
         </form>

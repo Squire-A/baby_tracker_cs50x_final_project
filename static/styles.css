@@ -38,3 +38,7 @@ nav .navbar-brand .green
     max-width: 1200px;
     margin: auto;
 }
+
+.inline-form {
+    display: inline;
+}

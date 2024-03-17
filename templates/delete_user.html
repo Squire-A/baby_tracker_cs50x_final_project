@@ -6,7 +6,8 @@
 
 {% block main %}
 <div class="mb-3">
-    <p>Are you sure you wish to delete your account? Once deleted the data for you and any of your babies can not be retreived!</p>
+    <h4>Are you sure you wish to delete your account?</h4>
+    <p>Once deleted the data for you and any of your babies can not be retreived!</p>
     <form action="/account/delete" method="POST">
         <input type="hidden" name="delete_user" value="{{ user_id }}"> 
         <button class="btn btn-danger btn-sm">Delete Account</button>
