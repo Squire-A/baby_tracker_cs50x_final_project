@@ -1,12 +1,12 @@
-import csv
-import datetime
+# import csv
+# import datetime
 # import pytz
-import requests
-import subprocess
-import urllib
-import uuid
+# import requests
+# import subprocess
+# import urllib
+# import uuid
 
-import io
+# import io
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -70,27 +70,6 @@ def sort_babies(babies, baby_id):
     babies.insert(0, this_baby)
     return babies
 
-# def feed_figure(feeds):
-#     df = pd.DataFrame(feeds)
-#     df["timestamp"] = pd.to_datetime(df["timestamp"])
-#     daily_feeding_data = df.groupby([df['timestamp'].dt.date, 'type'])[['duration_minutes', 'quantity_ml']].sum().unstack(fill_value=0)
-
-#     fig, ax1 = plt.subplots()
-#     ax2 = ax1.twinx()
-#     width = 0.2
-#     daily_feeding_data["duration_minutes"].plot(kind='bar', ax=ax1, color='skyblue', position=1, width=width, legend=None)
-#     daily_feeding_data["quantity_ml"].plot(kind='bar', ax=ax2, color='coral', position=0, width=width, legend=None)
-#     plt.title("Daily Feed Totals by Type")
-#     ax1.set_xlabel("Date")
-#     ax1.set_ylabel("Breast: Total Time (mins)", color='skyblue')
-#     ax1.tick_params(axis='y', labelcolor='skyblue')
-#     ax2.set_ylabel("Bottle: Total Quantity (ml)", color='coral')
-#     ax2.tick_params(axis='y', labelcolor='coral')
-#     plt.tight_layout()
-
-#     output = io.BytesIO()
-#     FigureCanvasAgg(fig).print_png(output)
-#     return output.getvalue(), 'image/png'
 
 def feed_fig_px(feeds):
     df = pd.DataFrame(feeds)
@@ -111,6 +90,7 @@ def feed_fig_px(feeds):
 
     return graphJSON
 
+
 def sleep_fig_px(sleeps): 
     df = pd.DataFrame(sleeps)
     df["start_time"] = pd.to_datetime(df["start_time"])
@@ -124,6 +104,7 @@ def sleep_fig_px(sleeps):
     df["hours"] = (df["duration_minutes"] / 60).round(1)
     df["overnight"] = df["overnight"].apply(lambda x: "Night" if x else "Day")
     df.rename(columns = {"overnight": "Night/Day", "start_date": "Date"}, inplace=True)
+    df.sort_values("Night/Day", inplace=True, ascending=False)
     
     labels = {"hours": "Hours of Sleep"}
     colors = {"Night": "#04658F", "Day": "#FF8C00"}
