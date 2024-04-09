@@ -8,9 +8,7 @@
 
 # import io
 import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_agg import FigureCanvasAgg
-import plotly
+from plotly.utils import PlotlyJSONEncoder
 import plotly.express as px
 import json
 
@@ -86,7 +84,7 @@ def feed_fig_px(feeds):
 
     labels = {"date": "Date", "value": "Total Time (mins)/Volume (ml)", "variable": "Feed Type"}
     fig = px.bar(daily_data_indexed, x='date', y=['Breast (minutes)', 'Bottle (ml)'], barmode='group', title='Sum of Feeds by Day', labels=labels)
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    graphJSON = json.dumps(fig, cls=PlotlyJSONEncoder)
 
     return graphJSON
 
@@ -110,7 +108,7 @@ def sleep_fig_px(sleeps):
     colors = {"Night": "#04658F", "Day": "#FF8C00"}
     
     fig = px.bar(df, x='Date', y='hours', color='Night/Day', labels=labels, title="Total Sleep by Day", color_discrete_map=colors)
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    graphJSON = json.dumps(fig, cls=PlotlyJSONEncoder)
     
     return graphJSON
 
@@ -128,7 +126,7 @@ def nappy_fig_px(nappies):
     labels = {"value": "Number of Nappies", "variable": "Nappy Contents", "date": "Date"}
     colors = {"Wet": "#FFCC00", "Dirty": "#9E5E05", "Both": "#9E7F05"}
     fig = px.bar(df, x='date', y=['Wet', 'Dirty', 'Both'], labels=labels, color_discrete_map=colors)
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    graphJSON = json.dumps(fig, cls=PlotlyJSONEncoder)
     
     return graphJSON
     

@@ -6,9 +6,9 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS babies (
     baby_id INTEGER PRIMARY KEY,
-    baby_name TEXT NOT NULL,
+    baby_name VARCHAR(30) NOT NULL,
     birthdate DATE NOT NULL,
-    gender TEXT CHECK (gender IN ('Male', 'Female', 'Unspecified')),
+    gender VARCHAR(11) CHECK (gender IN ('Male', 'Female', 'Unspecified')),
     user_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS feeds (
     feed_id INTEGER PRIMARY KEY,
     baby_id INTEGER NOT NULL,
     timestamp TIMESTAMP NOT NULL,
-    type TEXT CHECK (type IN ('Breast', 'Bottle')),
+    type VARCHAR(6) CHECK (type IN ('Breast', 'Bottle')),
     quantity_ml INTEGER,
     duration_minutes INTEGER,
     FOREIGN KEY (baby_id) REFERENCES babies(baby_id) ON DELETE CASCADE
