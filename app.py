@@ -69,7 +69,6 @@ def delete_baby(baby_id):
         return redirect("/")
         
     baby = db.execute("SELECT * FROM babies WHERE baby_id = ?", baby_id)[0]
-    print(baby)
     return render_template("delete_baby.html", baby=baby)
 
 
@@ -103,12 +102,8 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["user_id"]
-        # session["babies"] = db.execute(
-        # "SELECT * FROM babies WHERE user_id = ? ORDER BY baby_name",
-        # session["user_id"])
 
-        # Redirect user to home page
-        # flash("Successfully logged in!")
+        # Redirect user to index page
         return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
